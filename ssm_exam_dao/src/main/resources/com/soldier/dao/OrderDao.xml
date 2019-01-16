@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?> <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.soldier.dao.OrderDao">
+    <resultMap id="OrderMemberMap" type="order" autoMapping="true">
+        <id property="id" column="ID"></id>
+        <association property="member" column="MEMBERID" javaType="member" autoMapping="true" select="com.soldier.dao.MemberDao.findById">
+            <id column="ID" property="id"></id>
+        </association>
+        <association property="product" column="PRODUCTID" javaType="product" autoMapping="true" select="com.soldier.dao.ProductDao.findById">
+            <id column="id" property="id"></id>
+        </association>
+    </resultMap>
+    <select id="findAll" resultMap="OrderMemberMap" resultType="order">
+        select * from ORDERS
+    </select>
+
+
+    <!--<select id="findById" resultType="order" parameterType="String">
+        select * from ORDERS where ID=#{ID}
+    </select>-->
+    
+    
+    <resultMap id="TravellerOrderMap" type="order" autoMapping="true">
+        <id property="id" column="ID"></id>
+        <association property="member" column="MEMBERID" javaType="member" autoMapping="true" select="com.soldier.dao.MemberDao.findById">
+            <id column="ID" property="id"></id>
+        </association>
+        <association property="product" column="PRODUCTID" javaType="product" autoMapping="true" select="com.soldier.dao.ProductDao.findById">
+            <id column="ID" property="id"></id>
+        </association>
+        <collection property="travellers" column="id" autoMapping="true" ofType="traveller" select="com.soldier.dao.TravellerDao.findById">
+            <id column="id" property="id"></id>
+        </collection>
+
+    </resultMap>
+    <select id="findById" resultMap="TravellerOrderMap" resultType="order" parameterType="String">
+        select * from ORDERS where ID=#{id}
+    </select>
+</mapper>

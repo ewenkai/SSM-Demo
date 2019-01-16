@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?> <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.soldier.dao.UserDao">
+
+    <!--登录校验-->
+    <resultMap id="UserRoleMap" type="userInfo" autoMapping="true">
+        <id column="id" property="id"></id>
+        <collection property="roles" ofType="role" autoMapping="true" column="ID" select="com.soldier.dao.RoleDao.findByIdlogin">
+            <id column="id" property="id"></id>
+        </collection>
+    </resultMap>
+    <select id="findByName" resultMap="UserRoleMap" resultType="userInfo" parameterType="String">
+        select * from USERINFO where USERNAME=#{username}
+    </select>
+    
+    
+    <!--findAll-->
+    <select id="findAll" resultType="userInfo">
+        select * from USERINFO
+    </select>
+    <!--add-->
+    <insert id="add" parameterType="userInfo">
+        <selectKey keyProperty="id" resultType="String" keyColumn="id" order="AFTER">
+            <!--select last_insert_id()-->
+            select SYS_GUID() as id from DUAL
+        </selectKey>
+        insert into USERINFO (email, username, password, phonenum, status) values (#{email},#{username},#{password},#{phoneNum},#{status})
+    </insert>
+
+    <!--findById-->
+    <resultMap id="UserRoleMap2" type="userInfo" autoMapping="true">
+        <id property="id" column="id"/>
+        <collection property="roles" ofType="role" column="id" autoMapping="true" select="com.soldier.dao.RoleDao.findById">
+            <id column="id" property="id"/>
+        </collection>
+    </resultMap>
+    <select id="findById" resultMap="UserRoleMap2" parameterType="String" resultType="userInfo">
+        select * from USERINFO where ID=#{id}
+    </select>
+</mapper>

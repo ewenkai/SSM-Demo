@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?> <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.soldier.dao.RoleDao">
+
+
+    <select id="findByIdlogin" parameterType="String" resultType="role">
+        select r.* from ROLE r,USERINFO_ROLE ur where r.ID=ur.ROLEID and ur.USERID=#{id}
+    </select>
+
+
+    <insert id="add" parameterType="role">
+        <selectKey order="AFTER" keyColumn="id" resultType="String" keyProperty="id">
+            select SYS_GUID() as id from DUAL
+        </selectKey>
+        insert into ROLE (ROLENAME, ROLEDESC) values (#{roleName},#{roleDesc})
+    </insert>
+
+    <!--通过Uid查询Role并封装permission-->
+    <resultMap id="PermissionRoleMap" type="role" autoMapping="true">
+        <id property="id" column="id"></id>
+        <collection property="permissions" column="id" autoMapping="true" select="com.soldier.dao.PermissionDao.findById">
+            <id column="id" property="id"></id>
+        </collection>
+    </resultMap>
+    <select id="findById" parameterType="String" resultMap="PermissionRoleMap" resultType="role">
+        select * from ROLE r,USERINFO_ROLE ur where ur.USERID=#{id} and r.ID=ur.ROLEID
+    </select>
+
+    <!--通过Rid查询Role封装可以添加的permission-->
+    <!--查询角色详情-->
+    <resultMap id="PermissionRoleMap2" type="role" autoMapping="true">
+        <id property="id" column="id"></id>
+        <collection property="permissions" column="id" autoMapping="true" select="com.soldier.dao.PermissionDao.findById">
+            <id column="id" property="id"/>
+        </collection>
+    </resultMap>
+    <select id="findByRid" resultMap="PermissionRoleMap2" resultType="role" parameterType="String">
+        select * from ROLE where ID=#{id}
+    </select>
+
+
+
+    <!--findAll-->
+    <select id="findAll" resultType="role">
+        select * from ROLE
+    </select>
+    
+    <!--查询用户可以添加的角色-->
+    <select id="findByUser" resultType="role" parameterType="String">
+        select * from ROLE where id not in (select r.ID from ROLE r,USERINFO_ROLE ur where ur.ROLEID=r.ID and ur.USERID =#{id})
+
+    </select>
+</mapper>
