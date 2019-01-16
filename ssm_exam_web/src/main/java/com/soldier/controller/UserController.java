@@ -7,6 +7,7 @@ import com.soldier.service.RoleService;
 import com.soldier.service.UserRoleService;
 import com.soldier.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.annotation.Resource;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -63,6 +65,7 @@ public class UserController {
     @RequestMapping("/findById")
     //@RolesAllowed("admin")
     @Secured("ROLE_ADMIN")
+
     public ModelAndView findById(@RequestParam(name = "thispage",required = true,defaultValue = "1") Integer thispage,
                          @RequestParam(name = "pageSize",required = true,defaultValue = "5") Integer pageSize,
                          String id) throws ServletException, IOException {
